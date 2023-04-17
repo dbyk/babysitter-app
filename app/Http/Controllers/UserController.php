@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -9,9 +11,26 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $users = User::query();
+
+        // Filter by name
+        if ($request->has('name')) {
+            $name = $request->input('name');
+            $users->where('name', 'like', '%' . $name . '%');
+        }
+
+        // Filter by age
+        if ($request->has('email')) {
+            $email = $request->input('email');
+            $users->where('name', 'like', '%' . $email . '%');
+        }
+
+
+        $filteredUsers = UserResource::collection($users->paginate());
+
+        return response()->json($filteredUsers);
     }
 
     /**
