@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\UsersGetFilterManager;
+use App\Http\Requests\UsersGetRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -11,27 +13,9 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(UsersGetRequest $request)
     {
-        $users = User::query();
-
-        if ($request->has('name')) {
-            $name = $request->input('name');
-            $users->where('name', 'like', '%' . $name . '%');
-        }
-
-        if ($request->has('email')) {
-            $email = $request->input('email');
-            $users->where('name', 'like', '%' . $email . '%');
-        }
-
-        // todo convert into a proper Form object with loading data from request and validation
-        // that would also allow to accept wider range of conditions, like =, <, >=, etc.
-        // Even better would be to use some existing tool for that, e.g. GraphQL
-        if ($request->has('personality-phlegmatic')) {
-            $phlegmatic = $request->input('personality-phlegmatic');
-            $users->whereRelation('personality', 'phlegmatic', '=', $phlegmatic);
-        }
+        $users = (new UsersGetFilterManager(User::query(), $request))->applyFilters();
 
         $filteredUsers = UserResource::collection($users->paginate());
 
