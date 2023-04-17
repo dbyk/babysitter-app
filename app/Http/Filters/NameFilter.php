@@ -10,8 +10,7 @@ class NameFilter implements UsersGetFilterInterface
     public function apply(Builder $builder, UsersGetRequest $request): void
     {
         if ($request->has('name')) {
-            $name = $request->input('name');
-            $builder->where('name', 'like', '%' . $name . '%');
+            $builder->where('name', 'like', "%{$request->input('name')}%");
         }
     }
 

@@ -10,8 +10,7 @@ class EmailFilter implements UsersGetFilterInterface
     public function apply(Builder $builder, UsersGetRequest $request): void
     {
         if ($request->has('email')) {
-            $email = $request->input('email');
-            $builder->where('email', 'like', '%' . $email . '%');
+            $builder->where('email', 'like', "%{$request->input('email')}%");
         }
     }
 

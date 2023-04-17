@@ -8,18 +8,12 @@ use Illuminate\Database\Eloquent\Builder;
 class UsersGetFilterManager
 {
 
-    public function __construct(
-        public Builder $builder,
-        public UsersGetRequest $request)
-    {
-    }
-
-    public function applyFilters(): Builder
+    public function applyFilters(Builder $builder, UsersGetRequest $request): Builder
     {
         foreach($this->getPipes() as $pipe) {
-            app($pipe)->apply($this->builder, $this->request);
+            app($pipe)->apply($builder, $request);
         }
-        return $this->builder;
+        return $builder;
     }
 
     /**
@@ -29,6 +23,7 @@ class UsersGetFilterManager
     {
         return [
             NameFilter::class,
+            EmailFilter::class,
             PersonalityFilter::class,
         ];
     }
