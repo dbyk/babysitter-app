@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Resources\UserCollection;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +17,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+
+Route::get('/users', function () {
+    return new UserCollection(User::paginate());
 });
