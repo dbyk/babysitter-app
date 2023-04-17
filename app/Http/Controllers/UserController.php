@@ -15,18 +15,23 @@ class UserController extends Controller
     {
         $users = User::query();
 
-        // Filter by name
         if ($request->has('name')) {
             $name = $request->input('name');
             $users->where('name', 'like', '%' . $name . '%');
         }
 
-        // Filter by age
         if ($request->has('email')) {
             $email = $request->input('email');
             $users->where('name', 'like', '%' . $email . '%');
         }
 
+        // todo convert into a proper Form object with loading data from request and validation
+        // that would also allow to accept wider range of conditions, like =, <, >=, etc.
+        // Even better would be to use some existing tool for that, e.g. GraphQL
+        if ($request->has('personality-phlegmatic')) {
+            $phlegmatic = $request->input('personality-phlegmatic');
+            $users->whereRelation('personality', 'phlegmatic', '=', $phlegmatic);
+        }
 
         $filteredUsers = UserResource::collection($users->paginate());
 
